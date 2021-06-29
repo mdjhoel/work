@@ -2,21 +2,40 @@
 
   <head>
     <title>Homepage</title>
+    <link rel='stylesheet' href='styles.css'>
+    <!-- Internal CSS uses the style tag -->
+    <style>
+      /* This is a CSS comment */
+      li {
+        font-family: fantasy;
+      }
+      .myimg {
+        width:500px;
+        padding: 20px;
+      }
+      #wolverine {
+        padding: 5px;
+        font-size: 2em;
+        color: gold;
+      }
+    </style>
   </head>
 
   <body>
-    <h1>Home</h1>
+    <h1 style='color:red'>Home</h1>
+    <a href='about.html'>About</a>
     <p>This is my <a href="http://www.cnn.com">home</a> page</p>
     <h3>Favourite Marvel Characters</h3>
     <ol>
-      <li>Thor</li>
+      <!-- inline CSS, put CSS in actual tag -->
+      <li style='color:blue'>Thor</li>
       <li>Spiderman</li>
-      <li>Wolverine</li>
-      <li>Daredevil</li>
+      <li id='wolverine'>Wolverine</li>
+      <li style='color:red; font-family: arial;'>Daredevil</li>
       <li>Cyclops</li>
     </ol>
     <p>This is Thor</p>
-    <img src='thor.jpeg'>
+    <img src='thor.jpeg' class='myimg'>
   </body>
 
   <script>
