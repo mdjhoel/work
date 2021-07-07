@@ -44,9 +44,10 @@
         <div class="card">
           <div class="card-content">
             <span class="card-title">Map</span>
-            <div id="map" style="width:100%; height:63%;"></div>
+            <div id="map" style="width:100%; height:75%;"></div>
           </div>
         </div>
+
       </div> <!-- end of col -->
     </div> <!-- end of 1st row -->
     <div class="row">
@@ -79,9 +80,36 @@
       .then(response => {
         console.log(response.data.data);
         buildList(response.data.data); // call the buildList function
+        mapAlgo(response.data.data);
       })
 
-    mapIt(); // call mapIt() function
+    //mapIt(); // call mapIt() function
+
+    function mapAlgo(response) {
+      var map = L.map('map').setView([20, 0], 2);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      for (i=0;i<response.length;i++) {
+        var lat = response[i].latitude;
+        lon = response[i].longitude
+        var rad = parseInt(response[i].dead) * 2;
+        var popup = "<h6>" + response[i].location + "</h6><p>" + response[i].dead + "</p>";
+        if (i<10) {
+          var c = 'red';
+        } else if (i >= 10 && i<150) {
+          var c = 'orange';
+        } else if (i >= 150 && i<200) {
+          var c = 'yellow';
+        } else {
+          var c = 'blue';
+        }
+        L.circle([lat,lon],{color:c,radius:rad}).addTo(map).bindPopup(popup);
+      }
+
+    }
 
     function mapIt() {
       var map = L.map('map').setView([31.2304, 121.4737], 15);
