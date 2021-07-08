@@ -10,10 +10,19 @@
     <!-- Leaflet.js GIS links -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- chart.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
     <style>
       .card {
         height: 550px;
+      }
+      #legend {
+        float:left;
+        display:inline;
+        color:white;
+        padding:10px;
+        margin: 5px;
       }
     </style>
   </head>
@@ -43,8 +52,9 @@
       <div class="col s12 m6">
         <div class="card">
           <div class="card-content">
-            <span class="card-title">Map</span>
+            <span class="card-title">COVID Deaths Ranked by Country</span>
             <div id="map" style="width:100%; height:75%;"></div>
+            <span style='float: left;font-size:2em; align-items: center;'>Legend</span><div id="legend" style="background-color:red;">top10</div><div id="legend" style="background-color:orange; ">10-150</div><div id="legend" style="background-color:yellow; ">150-200</div><div id="legend" style="background-color:blue; ">200+</div>
           </div>
         </div>
 
@@ -54,18 +64,16 @@
       <div class="col s12 m6">
         <div class="card">
           <div class="card-content">
-            <span class="card-title">Card Title</span>
-            <p>I am a very simple card. I am good at containing small bits of information.
-            I am convenient because I require little markup to use effectively.</p>
+            <span class="card-title">Bar chart</span>
+            <canvas id="bar-chart" width="100%" height="75%"></canvas>
           </div>
         </div>
       </div> <!-- end of col -->
       <div class="col s12 m6">
         <div class="card">
           <div class="card-content">
-            <span class="card-title">Card Title</span>
-            <p>I am a very simple card. I am good at containing small bits of information.
-            I am convenient because I require little markup to use effectively.</p>
+            <span class="card-title">Pie chart</span>
+            <canvas id="pie-chart" width="100%" height="75%"></canvas>
           </div>
         </div>
       </div> <!-- end of col -->
@@ -81,9 +89,63 @@
         console.log(response.data.data);
         buildList(response.data.data); // call the buildList function
         mapAlgo(response.data.data);
+        barChart(response.data.data);
+        pieChart();
       })
 
     //mapIt(); // call mapIt() function
+
+    function pieChart() {
+      new Chart(document.getElementById("pie-chart"), {
+          type: 'pie',
+          data: {
+            labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+            datasets: [{
+              label: "Population (millions)",
+              backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+              data: [2478,5267,734,784,433]
+            }]
+          },
+          options: {
+            title: {
+              display: true,
+              text: 'Predicted world population (millions) in 2050'
+            }
+          }
+      });
+    }
+
+    function barChart(cdata) {
+      // Bar chart
+
+      var labarray = [];
+      var dataarray = [];
+      for (i=0;i<10;i++) {
+        labarray.push(cdata[i].location);
+        dataarray.push(cdata[i].dead);
+      }
+      new Chart(document.getElementById("bar-chart"), {
+          type: 'bar',
+          data: {
+            labels: labarray,
+            datasets: [
+              {
+                label: "COVID deaths",
+                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#1303fc","#fc0394","#1cfc03","#fcb103","#03fcd7"],
+                data: dataarray
+              }
+            ]
+          },
+          options: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Deaths from COVID-19'
+            }
+          }
+      });
+
+    }
 
     function mapAlgo(response) {
       var map = L.map('map').setView([20, 0], 2);
